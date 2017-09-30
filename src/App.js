@@ -9,13 +9,14 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Listener phrases={COLORS} grammar={GRAMMAR} render={(state) => {
+        <Listener phrases={COLORS} grammar={GRAMMAR} render={(state, resetState) => {
           return (
             <div className="App-content">
               {state.phrase &&
                 <div>
                   <pre> {JSON.stringify(state)} </pre>
-                  <div id="advanced" className="circle" style={{backgroundColor: state.phrase}}/>
+                  <div id="advanced" className="circle" style={{backgroundColor: state.phrase.split(' ').join('')}}/>
+                  <button onClick={() => resetState()}> THAT WAS AWESOME LETS GO AGAIN </button>
                 </div>
               }
               {!state.phrase && 
@@ -30,6 +31,14 @@ class App extends Component {
 }
 
 class Listener extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      diagnostic: '',
+      phrase: ''
+    }
+    this.resetState = this.resetState.bind(this)
+  }
   state = {}
   componentDidMount() {
     this.recognition = new window.webkitSpeechRecognition()
@@ -54,9 +63,16 @@ class Listener extends Component {
     console.log('Confidence: ' + e.results[0][0].confidence)
   }
 
+  resetState() {
+    this.setState({
+      diagnostic: '',
+      phrase: ''
+    });
+  }
+
   render() {
     return (
-      this.props.render(this.state)
+      this.props.render(this.state, this.resetState)
     )
   }
 }
