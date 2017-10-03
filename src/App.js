@@ -67,7 +67,7 @@ class Listener extends Component {
     this.setState({
       diagnostic: '',
       phrase: ''
-    });
+    }, () => this.recognition.start());
   }
 
   render() {
